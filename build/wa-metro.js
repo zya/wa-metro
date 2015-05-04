@@ -8,7 +8,7 @@ var cb = function (time, step) {
   osc.start(time);
   osc.stop(time + 0.1);
 };
-var metro = new Metro(context, 16, cb);
+var metro = new Metro(context, 8, cb);
 metro.start();
 },{"./lib/wa-metro.js":2}],2:[function(require,module,exports){
 var interval = 50;
@@ -16,7 +16,6 @@ var tempo = 120;
 var schedule_ahead = 0.9; // in think i seconds
 
 var next_note_time = 0.0;
-var resolution = 5;
 var workerFile = window.URL.createObjectURL(new Blob(['(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module \'"+o+"\'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){\nvar interval = 25;\nself.onmessage = function (event) {\n  if (event.data === \'interval\') {\n    interval = event.data.interval;\n  }\n  if (event.data === \'start\') {\n    console.log(\'worker starting\');\n    setInterval(function () {\n      postMessage(\'tick\');\n    }, interval);\n  }\n};\n},{}]},{},[1])'],{type:"text/javascript"}));
 
 var callback = function (time, index) {
@@ -56,10 +55,10 @@ Metro.prototype._scheduler = function _scheduler() {
 
 Metro.prototype._next = function _next() {
   this.index++;
-  if (this.index > resolution) {
+  if (this.index > this.resolution) {
     this.index = 1;
   }
-  next_note_time += ((60.0 / tempo) * 2) / resolution;
+  next_note_time += ((60.0 / tempo) * 2) / this.resolution;
 };
 
 module.exports = Metro;

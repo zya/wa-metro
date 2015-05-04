@@ -7,5 +7,5 @@ var cb = function (time, step) {
   osc.start(time);
   osc.stop(time + 0.1);
 };
-var metro = new Metro(context, 16, cb);
+var metro = new Metro(context, 8, cb);
 metro.start();
