@@ -1,4 +1,4 @@
-var Metro = require('./lib/wa-metro.js');
+var Metro = require('./lib/wa-metro');
 
 var context = new AudioContext();
 var cb = function (time, step) {

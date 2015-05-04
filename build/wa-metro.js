@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Metro = require('./lib/wa-metro.js');
+var Metro = require('./lib/wa-metro');
 
 var context = new AudioContext();
 var cb = function (time, step) {
@@ -21,8 +21,8 @@ setTimeout(function () {
   console.log('start');
   metro.start();
 }, 5000);
-},{"./lib/wa-metro.js":2}],2:[function(require,module,exports){
-var workerFile = window.URL.createObjectURL(new Blob(['(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module \'"+o+"\'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){\nvar interval = 25;\nvar timer = null;\nself.onmessage = function (event) {\n  if (event.data === \'interval\') {\n    interval = event.data.interval;\n  }\n  if (event.data === \'start\') {\n    timer = setInterval(function () {\n      postMessage(\'tick\');\n    }, interval);\n  }\n\n  if (event.data === \'stop\') {\n    clearInterval(timer);\n    timer = null;\n  }\n};\n},{}]},{},[1])'],{type:"text/javascript"}));
+},{"./lib/wa-metro":2}],2:[function(require,module,exports){
+var workerFile = require('./worker.js');
 
 function Metro(context, tempo, resolution, cb) {
   var self = this;
@@ -59,7 +59,6 @@ Metro.prototype.pause = function () {
 };
 
 Metro.prototype.stop = function () {
-  this._index = 1;
   this._first = true;
   this._worker.postMessage('stop');
 };
@@ -86,4 +85,32 @@ Metro.prototype._next = function _next() {
 };
 
 module.exports = Metro;
+},{"./worker.js":3}],3:[function(require,module,exports){
+var blob = URL.createObjectURL(new Blob(['(',
+  function () {
+    var interval = 25;
+    var timer = null;
+    self.onmessage = function (event) {
+      if (event.data === 'interval') {
+        interval = event.data.interval;
+      }
+      if (event.data === 'start') {
+        timer = setInterval(function () {
+          postMessage('tick');
+        }, interval);
+      }
+
+      if (event.data === 'stop') {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+  }.toString(),
+
+  ')()'
+], {
+  type: 'application/javascript'
+}));
+
+module.exports = blob;
 },{}]},{},[1]);

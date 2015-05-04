@@ -4,14 +4,13 @@
   "description": "simple scheduler for web-audio",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t workerify index.js > build/wa-metro.js",
+    "build": "browserify index.js > build/wa-metro.js",
     "test": "mocha"
   },
   "author": "zya",
   "devDependencies": {
     "browserify": "^9.0.8",
     "chai": "^2.2.0",
-    "mocha": "^2.2.4",
-    "workerify": "^0.3.0"
+    "mocha": "^2.2.4"
   }
 }
