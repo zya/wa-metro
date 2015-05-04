@@ -11,12 +11,18 @@ var cb = function (time, step) {
   osc.start(time);
   osc.stop(time + 0.1);
 };
-var metro = new Metro(context, 120, 8, cb);
+var metro = new Metro(context, 120, 16, cb);
+metro.start();
 setTimeout(function () {
+  console.log('stop');
+  metro.stop();
+}, 2000);
+setTimeout(function () {
+  console.log('start');
   metro.start();
-}, 3000);
+}, 5000);
 },{"./lib/wa-metro.js":2}],2:[function(require,module,exports){
-var workerFile = window.URL.createObjectURL(new Blob(['(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module \'"+o+"\'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){\nvar interval = 25;\nself.onmessage = function (event) {\n  if (event.data === \'interval\') {\n    interval = event.data.interval;\n  }\n  if (event.data === \'start\') {\n    console.log(\'worker starting\');\n    setInterval(function () {\n      postMessage(\'tick\');\n    }, interval);\n  }\n};\n},{}]},{},[1])'],{type:"text/javascript"}));
+var workerFile = window.URL.createObjectURL(new Blob(['(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module \'"+o+"\'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){\nvar interval = 25;\nvar timer = null;\nself.onmessage = function (event) {\n  if (event.data === \'interval\') {\n    interval = event.data.interval;\n  }\n  if (event.data === \'start\') {\n    timer = setInterval(function () {\n      postMessage(\'tick\');\n    }, interval);\n  }\n\n  if (event.data === \'stop\') {\n    clearInterval(timer);\n    timer = null;\n  }\n};\n},{}]},{},[1])'],{type:"text/javascript"}));
 
 function Metro(context, tempo, resolution, cb) {
   var self = this;
@@ -28,11 +34,12 @@ function Metro(context, tempo, resolution, cb) {
 
   this._index = 1;
   this._next_note_time = 0.0;
-  this._look_ahead = 2;
+  this._look_ahead = 0.5;
   this._intervcal = 50;
   this._first = true;
 
   this._worker = new Worker(workerFile);
+
   this._worker.onmessage = function (event) {
     if (event.data === 'tick') {
       self._scheduler();
@@ -44,8 +51,17 @@ function Metro(context, tempo, resolution, cb) {
 }
 
 Metro.prototype.start = function () {
-  var self = this;
   this._worker.postMessage('start');
+};
+
+Metro.prototype.pause = function () {
+  this._worker.postMessage('stop');
+};
+
+Metro.prototype.stop = function () {
+  this._index = 1;
+  this._first = true;
+  this._worker.postMessage('stop');
 };
 
 Metro.prototype._scheduler = function _scheduler() {

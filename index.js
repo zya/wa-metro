@@ -10,7 +10,13 @@ var cb = function (time, step) {
   osc.start(time);
   osc.stop(time + 0.1);
 };
-var metro = new Metro(context, 120, 8, cb);
+var metro = new Metro(context, 120, 16, cb);
+metro.start();
 setTimeout(function () {
+  console.log('stop');
+  metro.stop();
+}, 2000);
+setTimeout(function () {
+  console.log('start');
   metro.start();
-}, 3000);
+}, 5000);
