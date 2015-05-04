@@ -10,6 +10,7 @@ var cb = function (time, step) {
   osc.start(time);
   osc.stop(time + 0.1);
 };
+
 var metro = new Metro(context, 120, 16, cb);
 metro.start();
 setTimeout(function () {
@@ -20,3 +21,5 @@ setTimeout(function () {
   console.log('start');
   metro.start();
 }, 5000);
+
+module.exports = require('./lib/wa-metro');
