@@ -12,7 +12,6 @@
     "browserify": "^9.0.8",
     "chai": "^2.2.0",
     "mocha": "^2.2.4",
-    "webworkify": "^1.0.2",
     "workerify": "^0.3.0"
   }
 }
