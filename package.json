@@ -1,6 +1,6 @@
 {
   "name": "wa-metro",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple event scheduler for web-audio",
   "main": "index.js",
   "scripts": {
