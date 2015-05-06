@@ -3,6 +3,7 @@ var Metro = require('./lib/wa-metro');
 var context = new AudioContext();
 var cb = function (time, step) {
   var osc = context.createOscillator();
+  console.log(step);
   if (step === 1) {
     osc.frequency.value = 880;
   }
@@ -11,7 +12,9 @@ var cb = function (time, step) {
   osc.stop(time + 0.1);
 };
 
-var metro = new Metro(context, 120, 16, cb);
+var metro = new Metro(context, cb);
+metro.tempo = 120;
+metro.steps = 16;
 metro.start();
 setTimeout(function () {
   console.log('stop');
@@ -19,7 +22,10 @@ setTimeout(function () {
 }, 2000);
 setTimeout(function () {
   console.log('start');
+  metro.steps = 5;
+  metro.tempo = 90;
   metro.start();
 }, 5000);
 
 module.exports = require('./lib/wa-metro');
+window.metro = metro;

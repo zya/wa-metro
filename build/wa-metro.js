@@ -1,45 +1,54 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// var Metro = require('./lib/wa-metro');
+var Metro = require('./lib/wa-metro');
 
-// var context = new AudioContext();
-// var cb = function (time, step) {
-//   var osc = context.createOscillator();
-//   if (step === 1) {
-//     osc.frequency.value = 880;
-//   }
-//   osc.connect(context.destination);
-//   osc.start(time);
-//   osc.stop(time + 0.1);
-// };
+var context = new AudioContext();
+var cb = function (time, step) {
+  var osc = context.createOscillator();
+  console.log(step);
+  if (step === 1) {
+    osc.frequency.value = 880;
+  }
+  osc.connect(context.destination);
+  osc.start(time);
+  osc.stop(time + 0.1);
+};
 
-// var metro = new Metro(context, 120, 16, cb);
-// metro.start();
-// setTimeout(function () {
-//   console.log('stop');
-//   metro.stop();
-// }, 2000);
-// setTimeout(function () {
-//   console.log('start');
-//   metro.start();
-// }, 5000);
+var metro = new Metro(context, cb);
+metro.tempo = 120;
+metro.steps = 16;
+metro.start();
+setTimeout(function () {
+  console.log('stop');
+  metro.stop();
+}, 2000);
+setTimeout(function () {
+  console.log('start');
+  metro.steps = 5;
+  metro.tempo = 90;
+  metro.start();
+}, 5000);
 
 module.exports = require('./lib/wa-metro');
+window.metro = metro;
 },{"./lib/wa-metro":2}],2:[function(require,module,exports){
 var work = require('webworkify');
 
-function Metro(context, tempo, resolution, cb) {
+function Metro(context, cb) {
   var self = this;
 
+  if (!context) throw new Error('Context is mandatory');
+  if (!cb) throw new Error('Callback is mandatory');
   this.context = context;
+  this.steps = 16;
+  this.tempo = 120;
   this.cb = cb;
-  this.resolution = resolution;
-  this.tempo = tempo;
+  this.look_ahead = 1.0;
 
-  this._index = 1;
-  this._next_note_time = 0.0;
-  this._look_ahead = 0.5;
-  this._intervcal = 50;
+  this._step = 1;
+  this._scheduler_interval = 20;
+  this._next_event_time = 0.0;
   this._first = true;
+  this._is_running = false;
 
   this._worker = work(require('./worker.js'));
 
@@ -48,43 +57,51 @@ function Metro(context, tempo, resolution, cb) {
       self._scheduler();
     }
   };
+
   this._worker.postMessage({
-    'interval': self._interval
+    'interval': self._scheduler_interval
   });
 }
 
-Metro.prototype.start = function () {
+Metro.prototype.start = function (cb) {
+  if (this._is_running) {
+    console.log('already started');
+    return;
+  }
+  this._is_running = true;
   this._worker.postMessage('start');
 };
 
 Metro.prototype.pause = function () {
+  this._is_running = false;
   this._worker.postMessage('stop');
 };
 
 Metro.prototype.stop = function () {
   this._first = true;
+  this._is_running = false;
   this._worker.postMessage('stop');
 };
 
 Metro.prototype._scheduler = function _scheduler() {
   var self = this;
-  while (this._next_note_time < this.context.currentTime + this._look_ahead) {
-    this.cb(self._next_note_time, self._index);
+  while (this._next_event_time < this.context.currentTime + this.look_ahead) {
+    this.cb(self._next_event_time, self._step);
     this._next();
   }
 };
 
 Metro.prototype._next = function _next() {
-  this._index++;
+  this._step++;
   if (this._first) {
-    this._index = 1;
-    this._next_note_time = this.context.currentTime;
+    this._step = 1;
+    this._next_event_time = this.context.currentTime;
     this._first = false;
   }
-  if (this._index > this.resolution) {
-    this._index = 1;
+  if (this._step > this.steps) {
+    this._step = 1;
   }
-  this._next_note_time += ((60.0 / this.tempo) * 4) / this.resolution;
+  this._next_event_time += ((60.0 / this.tempo) * 4) / this.steps;
 };
 
 module.exports = Metro;
