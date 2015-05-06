@@ -1,47 +1,18 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Metro = require('./lib/wa-metro');
-
-var context = new AudioContext();
-var cb = function (time, step) {
-  var osc = context.createOscillator();
-  console.log(step);
-  if (step === 1) {
-    osc.frequency.value = 880;
-  }
-  osc.connect(context.destination);
-  osc.start(time);
-  osc.stop(time + 0.1);
-};
-
-var metro = new Metro(context, cb);
-metro.tempo = 120;
-metro.steps = 16;
-metro.start();
-setTimeout(function () {
-  console.log('stop');
-  metro.stop();
-}, 2000);
-setTimeout(function () {
-  console.log('start');
-  metro.steps = 5;
-  metro.tempo = 90;
-  metro.start();
-}, 5000);
-
 module.exports = require('./lib/wa-metro');
-window.metro = metro;
 },{"./lib/wa-metro":2}],2:[function(require,module,exports){
 var work = require('webworkify');
 
-function Metro(context, cb) {
+function Metro(context, callback) {
   var self = this;
 
   if (!context) throw new Error('Context is mandatory');
-  if (!cb) throw new Error('Callback is mandatory');
+  if (!callback) throw new Error('Callback is mandatory');
+
   this.context = context;
   this.steps = 16;
   this.tempo = 120;
-  this.cb = cb;
+  this.callback = callback;
   this.look_ahead = 1.0;
 
   this._step = 1;
@@ -63,7 +34,7 @@ function Metro(context, cb) {
   });
 }
 
-Metro.prototype.start = function (cb) {
+Metro.prototype.start = function (callback) {
   if (this._is_running) {
     console.log('already started');
     return;
@@ -86,7 +57,7 @@ Metro.prototype.stop = function () {
 Metro.prototype._scheduler = function _scheduler() {
   var self = this;
   while (this._next_event_time < this.context.currentTime + this.look_ahead) {
-    this.cb(self._next_event_time, self._step);
+    this.callback(self._next_event_time, self._step);
     this._next();
   }
 };

@@ -1,10 +1,11 @@
 {
   "name": "wa-metro",
-  "version": "0.0.0",
-  "description": "simple scheduler for web-audio",
+  "version": "1.0.0",
+  "description": "simple event scheduler for web-audio",
   "main": "index.js",
   "scripts": {
     "build": "browserify index.js > build/wa-metro.js",
+    "minify": "browserify index.js | uglifyjs > build/wa-metro.min.js",
     "test": "mocha"
   },
   "author": "zya",
@@ -12,6 +13,7 @@
     "browserify": "^9.0.8",
     "chai": "^2.2.0",
     "mocha": "^2.2.4",
+    "uglify-js": "^2.4.21",
     "webworkify": "^1.0.2"
   }
 }
