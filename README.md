@@ -40,5 +40,6 @@ var metro = new Metro(context, callback);
 metro.tempo = 100; // in BPM, defaults to 120
 metro.steps = 8; // number of steps in a bar. defaults to 16
 metro.look_ahead = 0.5; // look ahead time in Seconds. defaults to 1.0
+metro.callback = function(time, step){}; // change the callback
 ````
 
