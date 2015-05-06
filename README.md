@@ -12,7 +12,21 @@ var callback = function (time, step) {
 var metro = new Metro(context, callback);
 metro.start();
 ````
+### Callback
+The callback function will have `time` and `step` parameters. You can use these values to create dynamic loops.
 
+````js
+var metro = new Metro(context, callback);
+function callback(time, step) {
+	var osc = context.createOscillator();
+	osc.connect(context.destination);
+	if(step === 1) {
+		osc.frequency.value = 880;
+	}
+	osc.start(time);
+	osc.stop(time + 0.1);
+}
+````
 ### Methods
 ````js
 var metro = new Metro(context, callback);

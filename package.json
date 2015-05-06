@@ -15,5 +15,12 @@
     "mocha": "^2.2.4",
     "uglify-js": "^2.4.21",
     "webworkify": "^1.0.2"
-  }
+  },
+  "keywords": [
+    "web-audio",
+    "web audio api",
+    "scheduling",
+    "events",
+    "metronome"
+  ]
 }
