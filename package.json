@@ -9,12 +9,14 @@
     "test": "mocha"
   },
   "author": "zya",
+  "dependencies": {
+    "webworkify": "^1.0.2"
+  },
   "devDependencies": {
     "browserify": "^9.0.8",
     "chai": "^2.2.0",
     "mocha": "^2.2.4",
-    "uglify-js": "^2.4.21",
-    "webworkify": "^1.0.2"
+    "uglify-js": "^2.4.21"
   },
   "keywords": [
     "web-audio",
