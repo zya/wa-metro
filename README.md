@@ -3,6 +3,16 @@ Simple event scheduler for Web Audio API.
 
 This library is based on [Chris Wilson](https://twitter.com/cwilso)'s scheduling [method](http://www.html5rocks.com/en/tutorials/audio/scheduling/) used in his [metronome](https://github.com/cwilso/metronome) example. 
 
+### Installation
+You can install `wa-metro` from npm.
+````
+npm install wa-metro
+````
+Or grab the latest version from [build folder](https://github.com/zya/wa-metro/tree/master/build) and include it in your html.
+````html
+
+<script src='beet.min.js'></script>
+````
 ### Example Usage
 ````js
 var context = new AudioContext();

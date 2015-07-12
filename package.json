@@ -1,7 +1,7 @@
 {
   "name": "wa-metro",
-  "version": "1.0.5",
-  "description": "Simple event scheduler for web-audio",
+  "version": "1.0.6",
+  "description": "Simple event scheduler for web audio api",
   "main": "index.js",
   "scripts": {
     "build": "browserify index.js > build/wa-metro.js",

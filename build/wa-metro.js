@@ -56,6 +56,9 @@ Metro.prototype.stop = function () {
 
 Metro.prototype._scheduler = function _scheduler() {
   var self = this;
+  if (this._step === 1 && this._first) {
+    this._next_event_time = this.context.currentTime;
+  }
   while (this._next_event_time < this.context.currentTime + this.look_ahead) {
     this.callback(self._next_event_time, self._step);
     this._next();
@@ -76,6 +79,7 @@ Metro.prototype._next = function _next() {
 };
 
 module.exports = Metro;
+window.Metro = Metro;
 },{"./worker.js":3,"webworkify":4}],3:[function(require,module,exports){
 module.exports = function (self) {
   var interval = 25;
