@@ -11,7 +11,7 @@ npm install wa-metro
 Or grab the latest version from [build folder](https://github.com/zya/wa-metro/tree/master/build) and include it in your html.
 ````html
 
-<script src='beet.min.js'></script>
+<script src='wa-metro.min.js'></script>
 ````
 ### Example Usage
 ````js
