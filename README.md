@@ -23,11 +23,16 @@ var metro = new Metro(context, callback);
 metro.start();
 ````
 ### Callback
-The callback function will have `time` and `step` parameters. You can use these values to create dynamic loops.
+The callback function will have `time`, `step` and `timeFromScheduled` parameters. You can use these values to create dynamic loops and animations.
+
+#### Callback Parameters
+* `time` - the audio time for the step which can be used to schedule audio events.
+* `step`  - the number of the scheduled step.
+* `timeFromScheduled`  - the time (in seconds) that the event will be triggered from the schedule event (`time - context.currentTime`). This time can be used to schedule animations and other events as shown in the example below.
 
 ````js
 var metro = new Metro(context, callback);
-function callback(time, step) {
+function callback(time, step, timeFromScheduled) {
 	var osc = context.createOscillator();
 	osc.connect(context.destination);
 	if(step === 1) {
@@ -35,6 +40,10 @@ function callback(time, step) {
 	}
 	osc.start(time);
 	osc.stop(time + 0.1);
+
+  setTimeout(function(){
+    // trigger some js event
+  }, timeFromScheduled * 1000);
 }
 ````
 ### Methods
