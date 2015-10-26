@@ -4,8 +4,8 @@
   "description": "Simple event scheduler for web audio api",
   "main": "index.js",
   "scripts": {
-    "build": "browserify index.js > build/wa-metro.js",
-    "minify": "browserify index.js | uglifyjs > build/wa-metro.min.js",
+    "build": "browserify index.js --standalone WAMetro > build/wa-metro.js",
+    "minify": "browserify index.js --standalone WAMetro | uglifyjs > build/wa-metro.min.js",
     "test": "mocha"
   },
   "author": "zya",
