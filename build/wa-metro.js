@@ -24,7 +24,7 @@ function Metro(context, callback) {
   this._worker = work(require('./worker.js'));
 
   this._worker.onmessage = function(event) {
-    if (event.data === 'tick') {
+    if (event.data === 'tick' && self._is_running) {
       self._scheduler();
     }
   };
@@ -50,6 +50,7 @@ Metro.prototype.pause = function() {
 
 Metro.prototype.stop = function() {
   this._first = true;
+  this._step = 1;
   this._is_running = false;
   this._worker.postMessage('stop');
 };
